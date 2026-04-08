@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Banker's Algorithm Simulator</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="header">
+
+<div class="header-badge">
+OS Deadlock Avoidance
+</div>
+
+<h1>Banker's Algorithm Simulator</h1>
+
+<p>
+Configure resource allocation and check whether the system is safe.
+</p>
+
+</header>
+
+<!-- STEP NAVIGATION -->
+
+<nav class="steps-bar">
+
+<button class="step-item active"
+onclick="goStep(1)">
+<span class="step-num">1</span>
+Configure
+</button>
+
+<div class="step-connector"></div>
+
+<button class="step-item"
+onclick="goStep(2)">
+<span class="step-num">2</span>
+Allocation
+</button>
+
+<div class="step-connector"></div>
+
+<button class="step-item"
+onclick="goStep(3)">
+<span class="step-num">3</span>
+Safety Check
+</button>
+
+</nav>
+
+<!-- STEP 1 -->
+
+<div class="panel active"
+id="panel-1">
+
+<div class="card">
+
+<div class="card-title">
+System Parameters
+</div>
+
+<div class="config-grid">
+
+<div class="field-group">
+
+<label class="field-label">
+Processes (n)
+</label>
+
+<input type="number"
+class="field-input"
+id="cfg-n"
+min="1"
+max="8"
+value="5">
+
+</div>
+
+<div class="field-group">
+
+<label class="field-label">
+Resource Types (m)
+</label>
+
+<input type="number"
+class="field-input"
+id="cfg-m"
+min="1"
+max="5"
+value="3">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="card-title">
+Total Resources
+</div>
+
+<div class="resource-row"
+id="total-res-row">
+</div>
+
+</div>
+
+<div class="btn-row">
+
+<button class="btn btn-primary"
+onclick="buildMatrices()">
+
+Next → Allocation Tables
+
+</button>
+
+</div>
+
+</div>
+
+<!-- STEP 2 -->
+
+<div class="panel"
+id="panel-2">
+
+<div class="card">
+
+<div class="card-title">
+Available Resources
+</div>
+
+<div class="resource-row"
+id="avail-row">
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="card-title">
+Allocation Matrix
+</div>
+
+<div class="table-wrap">
+<table id="alloc-table"></table>
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="card-title">
+Max Matrix
+</div>
+
+<div class="table-wrap">
+<table id="max-table"></table>
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="card-title">
+Need Matrix
+</div>
+
+<div class="table-wrap">
+<table id="need-table"></table>
+</div>
+
+</div>
+
+<div class="btn-row">
+
+<button class="btn btn-secondary"
+onclick="goStep(1)">
+← Back
+</button>
+
+<button class="btn btn-run"
+onclick="runSafety()">
+
+▶ Run Algorithm
+
+</button>
+
+</div>
+
+</div>
+
+<!-- STEP 3 -->
+
+<div class="panel"
+id="panel-3">
+
+<div id="result-container"></div>
+
+<div class="btn-row">
+
+<button class="btn btn-secondary"
+onclick="goStep(2)">
+← Back
+</button>
+
+<button class="btn btn-primary"
+onclick="goStep(1)">
+Restart
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
