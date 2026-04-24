@@ -1,9 +1,9 @@
 let n = 5;
 let m = 3;
 
-/* =============================
+/* ===========================
    RESOURCE LABELS
-============================= */
+=========================== */
 
 function resLabel(i){
   return String.fromCharCode(65+i);
@@ -16,9 +16,9 @@ function resLabels(){
   );
 }
 
-/* =============================
+/* ===========================
    STEP NAVIGATION
-============================= */
+=========================== */
 
 function goStep(step){
 
@@ -43,9 +43,9 @@ el.classList.add("active");
 
 }
 
-/* =============================
-   STEP 1 — TOTAL RESOURCES
-============================= */
+/* ===========================
+   BUILD TOTAL RESOURCES
+=========================== */
 
 function rebuildTotals(){
 
@@ -83,25 +83,28 @@ value="10">
 
 }
 
-/* =============================
-   STEP 2 — BUILD MATRICES
-============================= */
+/* ===========================
+   BUILD MATRICES
+=========================== */
 
 function buildMatrices(){
 
-rebuildTotals();
-
-const rl=resLabels();
-
-/* Available Inputs */
-
-const availDiv=
-document.getElementById(
-"avail-row"
+n=parseInt(
+document.getElementById("cfg-n").value
 );
 
+m=parseInt(
+document.getElementById("cfg-m").value
+);
+
+/* AVAILABLE INPUTS */
+
+const availDiv=
+document.getElementById("avail-row");
+
 availDiv.innerHTML=
-rl.map((r,i)=>
+resLabels()
+.map((r,i)=>
 
 `<div class="resource-field">
 
@@ -127,9 +130,9 @@ goStep(2);
 
 }
 
-/* =============================
-   TABLE BUILDER
-============================= */
+/* ===========================
+   CREATE TABLE
+=========================== */
 
 function makeTable(id,prefix){
 
@@ -170,9 +173,9 @@ table.innerHTML=html;
 
 }
 
-/* =============================
-   NEED MATRIX
-============================= */
+/* ===========================
+   UPDATE NEED MATRIX
+=========================== */
 
 function updateNeed(){
 
@@ -217,9 +220,9 @@ document
 
 }
 
-/* =============================
+/* ===========================
    SAFETY ALGORITHM
-============================= */
+=========================== */
 
 function runSafety(){
 
@@ -229,7 +232,7 @@ let need=[];
 let total=[];
 let avail=[];
 
-/* ----- Read Total ----- */
+/* READ TOTAL */
 
 for(let j=0;j<m;j++){
 
@@ -241,7 +244,7 @@ document
 
 }
 
-/* ----- Read Matrices ----- */
+/* READ MATRICES */
 
 for(let i=0;i<n;i++){
 
@@ -270,9 +273,7 @@ max[i][j]-alloc[i][j];
 
 }
 
-/* =============================
-   CALCULATE AVAILABLE
-============================= */
+/* CALCULATE AVAILABLE */
 
 for(let j=0;j<m;j++){
 
@@ -281,7 +282,7 @@ document
 .getElementById(`avail-${j}`)
 .value;
 
-/* If user entered Available */
+/* USER ENTERED */
 
 if(inputVal !== ""){
 
@@ -289,7 +290,7 @@ avail[j]=parseInt(inputVal);
 
 }
 
-/* If NOT entered → AUTO CALCULATE */
+/* AUTO CALCULATE */
 
 else{
 
@@ -304,7 +305,7 @@ sumAlloc+=alloc[i][j];
 avail[j]=
 total[j]-sumAlloc;
 
-/* Show calculated Available */
+/* SHOW VALUE */
 
 document
 .getElementById(`avail-${j}`)
@@ -314,9 +315,7 @@ document
 
 }
 
-/* =============================
-   BANKER'S ALGORITHM
-============================= */
+/* BANKER'S LOGIC */
 
 let finish=new Array(n)
 .fill(false);
@@ -362,12 +361,12 @@ safeSeq.push(i);
 
 }
 
-/* =============================
-   RESULT
-============================= */
+/* CHECK SAFE */
 
 let safe=
 finish.every(v=>v);
+
+/* RESULT */
 
 let resultDiv=
 document.getElementById(
@@ -407,11 +406,24 @@ goStep(3);
 
 }
 
-/* =============================
-   INIT
-============================= */
+/* ===========================
+   INIT FIX
+=========================== */
 
-document.addEventListener(
-"DOMContentLoaded",
-rebuildTotals
-);
+document.addEventListener("DOMContentLoaded", () => {
+
+rebuildTotals();
+
+/* When process changes */
+
+document
+.getElementById("cfg-n")
+.addEventListener("input", rebuildTotals);
+
+/* When resource changes */
+
+document
+.getElementById("cfg-m")
+.addEventListener("input", rebuildTotals);
+
+});
