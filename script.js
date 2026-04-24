@@ -1,257 +1,278 @@
 let n = 5;
 let m = 3;
 
-/* Labels */
+/* ===== Labels ===== */
 
 function resLabel(i){
-return String.fromCharCode(65+i);
+  return String.fromCharCode(65+i);
 }
 
 function resLabels(){
-return Array.from(
-{length:m},
-(_,i)=>resLabel(i)
-);
+  return Array.from(
+    {length:m},
+    (_,i)=>resLabel(i)
+  );
 }
 
-/* Step navigation */
+/* ===== Step navigation ===== */
 
 function goStep(step){
 
-document
-.querySelectorAll(".panel")
-.forEach(p=>p.classList.remove("active"));
+  document
+  .querySelectorAll(".panel")
+  .forEach(p=>p.classList.remove("active"));
 
-document
-.getElementById(`panel-${step}`)
-.classList.add("active");
+  document
+  .getElementById(`panel-${step}`)
+  .classList.add("active");
 
-document
-.querySelectorAll(".step-item")
-.forEach((el,i)=>{
+  document
+  .querySelectorAll(".step-item")
+  .forEach((el,i)=>{
 
-el.classList.remove("active");
+    el.classList.remove("active");
 
-if(i+1===step)
-el.classList.add("active");
+    if(i+1===step)
+      el.classList.add("active");
 
-});
+  });
 
 }
 
-/* Step 1 */
+/* ===== Step 1 ===== */
 
 function rebuildTotals(){
 
-n=parseInt(
-document.getElementById("cfg-n").value
-);
+  n=parseInt(
+    document.getElementById("cfg-n").value
+  );
 
-m=parseInt(
-document.getElementById("cfg-m").value
-);
+  m=parseInt(
+    document.getElementById("cfg-m").value
+  );
 
-const container=
-document.getElementById(
-"total-res-row"
-);
+  const container=
+  document.getElementById(
+    "total-res-row"
+  );
 
-container.innerHTML=
-resLabels()
-.map((r,i)=>
+  container.innerHTML=
+  resLabels()
+  .map((r,i)=>
 
-`<div class="resource-field">
+  `<div class="resource-field">
 
-<span class="resource-label">
-${r}
-</span>
+    <span class="resource-label">
+      ${r}
+    </span>
 
-<input type="number"
-class="resource-input"
-id="tot-${i}"
-value="5">
+    <input type="number"
+      class="resource-input"
+      id="tot-${i}"
+      value="5">
 
-</div>`
+  </div>`
 
-).join("");
+  ).join("");
 
 }
 
-/* Step 2 */
+/* ===== Step 2 ===== */
 
 function buildMatrices(){
 
-rebuildTotals();
+  rebuildTotals();
 
-const rl=resLabels();
+  const rl=resLabels();
 
-const availDiv=
-document.getElementById(
-"avail-row"
-);
+  const availDiv=
+  document.getElementById(
+    "avail-row"
+  );
 
-availDiv.innerHTML=
-rl.map((r,i)=>
+  /* Default placeholder = 1 */
 
-`<div class="resource-field">
+  availDiv.innerHTML=
+  rl.map((r,i)=>
 
-<span class="resource-label">
-${r}
-</span>
+  `<div class="resource-field">
 
-<input type="number"
-class="resource-input"
-id="avail-${i}"
-value="3">
+    <span class="resource-label">
+      ${r}
+    </span>
 
-</div>`
+    <input type="number"
+      class="resource-input"
+      id="avail-${i}"
+      placeholder="1">
 
-).join("");
+  </div>`
 
-makeTable("alloc-table","a");
-makeTable("max-table","mx");
+  ).join("");
 
-updateNeed();
+  makeTable("alloc-table","a");
+  makeTable("max-table","mx");
 
-goStep(2);
+  updateNeed();
+
+  goStep(2);
 
 }
+
+/* ===== Table Builder ===== */
 
 function makeTable(id,prefix){
 
-const table=
-document.getElementById(id);
+  const table=
+  document.getElementById(id);
 
-let html=
-"<tr><th>Process</th>";
+  let html=
+  "<tr><th>Process</th>";
 
-for(let j=0;j<m;j++)
-html+=`<th>R${j}</th>`;
+  for(let j=0;j<m;j++)
+    html+=`<th>R${j}</th>`;
 
-html+="</tr>";
+  html+="</tr>";
 
-for(let i=0;i<n;i++){
+  for(let i=0;i<n;i++){
 
-html+=`<tr><td>P${i}</td>`;
+    html+=`<tr><td>P${i}</td>`;
 
-for(let j=0;j<m;j++){
+    for(let j=0;j<m;j++){
 
-html+=`<td>
+      html+=`<td>
 
-<input type="number"
-class="matrix-input"
-id="${prefix}-${i}-${j}"
-value="0"
-oninput="updateNeed()">
+        <input type="number"
+          class="matrix-input"
+          id="${prefix}-${i}-${j}"
+          value="0"
+          oninput="updateNeed()">
 
-</td>`;
+      </td>`;
+
+    }
+
+    html+="</tr>";
+
+  }
+
+  table.innerHTML=html;
 
 }
 
-html+="</tr>";
-
-}
-
-table.innerHTML=html;
-
-}
-
-/* Need matrix */
+/* ===== Need Matrix ===== */
 
 function updateNeed(){
 
-const rl=resLabels();
+  const rl=resLabels();
 
-let html=
-"<tr><th>Process</th>";
+  let html=
+  "<tr><th>Process</th>";
 
-rl.forEach(r=>{
-html+=`<th>${r}</th>`;
-});
+  rl.forEach(r=>{
+    html+=`<th>${r}</th>`;
+  });
 
-html+="</tr>";
+  html+="</tr>";
 
-for(let i=0;i<n;i++){
+  for(let i=0;i<n;i++){
 
-html+=`<tr><td>P${i}</td>`;
+    html+=`<tr><td>P${i}</td>`;
 
-for(let j=0;j<m;j++){
+    for(let j=0;j<m;j++){
 
-let a=parseInt(
-document
-.getElementById(`a-${i}-${j}`)
-?.value||0
-);
+      let a=parseInt(
+        document
+        .getElementById(`a-${i}-${j}`)
+        ?.value||0
+      );
 
-let mx=parseInt(
-document
-.getElementById(`mx-${i}-${j}`)
-?.value||0
-);
+      let mx=parseInt(
+        document
+        .getElementById(`mx-${i}-${j}`)
+        ?.value||0
+      );
 
-let need=mx-a;
+      let need=mx-a;
 
-html+=`<td>${need}</td>`;
+      html+=`<td>${need}</td>`;
+
+    }
+
+    html+="</tr>";
+
+  }
+
+  document
+  .getElementById("need-table")
+  .innerHTML=html;
 
 }
 
-html+="</tr>";
-
-}
-
-document
-.getElementById("need-table")
-.innerHTML=html;
-
-}
-
-/* Safety Algorithm */
+/* ===== Safety Algorithm ===== */
 
 function runSafety(){
 
-const rl=resLabels();
+  const rl=resLabels();
 
-let avail=[];
-let alloc=[];
-let max=[];
-let need=[];
+  let avail=[];
+  let alloc=[];
+  let max=[];
+  let need=[];
+
+/* ===== FIX 1: Default Available = 1 ===== */
 
 for(let j=0;j<m;j++){
 
-avail[j]=parseInt(
-document
-.getElementById(`avail-${j}`)
-.value
-);
+  let val =
+  document
+  .getElementById(`avail-${j}`)
+  .value;
+
+  if(val === "" || isNaN(val)){
+
+    avail[j] = 1;  /* Default */
+
+  }
+
+  else{
+
+    avail[j] = parseInt(val);
+
+  }
 
 }
+
+/* ===== Read matrices ===== */
 
 for(let i=0;i<n;i++){
 
-alloc[i]=[];
-max[i]=[];
-need[i]=[];
+  alloc[i]=[];
+  max[i]=[];
+  need[i]=[];
 
-for(let j=0;j<m;j++){
+  for(let j=0;j<m;j++){
 
-alloc[i][j]=parseInt(
-document
-.getElementById(`a-${i}-${j}`)
-.value
-);
+    alloc[i][j]=parseInt(
+      document
+      .getElementById(`a-${i}-${j}`)
+      .value || 0
+    );
 
-max[i][j]=parseInt(
-document
-.getElementById(`mx-${i}-${j}`)
-.value
-);
+    max[i][j]=parseInt(
+      document
+      .getElementById(`mx-${i}-${j}`)
+      .value || 0
+    );
 
-need[i][j]=
-max[i][j]-alloc[i][j];
+    need[i][j]=
+      max[i][j]-alloc[i][j];
+
+  }
 
 }
 
-}
+/* ===== Banker's Safety Logic ===== */
 
 let finish=new Array(n)
 .fill(false);
@@ -260,45 +281,49 @@ let safeSeq=[];
 
 for(let k=0;k<n;k++){
 
-for(let i=0;i<n;i++){
+  for(let i=0;i<n;i++){
 
-if(!finish[i]){
+    if(!finish[i]){
 
-let possible=true;
+      let possible=true;
 
-for(let j=0;j<m;j++){
+      for(let j=0;j<m;j++){
 
-if(need[i][j]>avail[j]){
+        if(need[i][j]>avail[j]){
 
-possible=false;
-break;
+          possible=false;
+          break;
+
+        }
+
+      }
+
+      if(possible){
+
+        for(let j=0;j<m;j++){
+
+          avail[j]+=alloc[i][j];
+
+        }
+
+        finish[i]=true;
+
+        safeSeq.push(i);
+
+      }
+
+    }
+
+  }
 
 }
 
-}
-
-if(possible){
-
-for(let j=0;j<m;j++){
-
-avail[j]+=alloc[i][j];
-
-}
-
-finish[i]=true;
-
-safeSeq.push(i);
-
-}
-
-}
-
-}
-
-}
+/* ===== Check Safe ===== */
 
 let safe=
 finish.every(v=>v);
+
+/* ===== Show Result ===== */
 
 let resultDiv=
 document.getElementById(
@@ -309,12 +334,12 @@ if(safe){
 
 resultDiv.innerHTML=
 
-`<h2 style="color:lightgreen">
-SAFE STATE
+`<h2 style="color:green">
+✔ SAFE STATE
 </h2>
 
 <p>
-Sequence:
+Safe Sequence:
 ${safeSeq.map(p=>"P"+p).join(" → ")}
 </p>`;
 
@@ -325,8 +350,12 @@ else{
 resultDiv.innerHTML=
 
 `<h2 style="color:red">
-UNSAFE STATE
-</h2>`;
+✖ UNSAFE STATE
+</h2>
+
+<p>
+Deadlock possible — No safe sequence found.
+</p>`;
 
 }
 
@@ -334,7 +363,7 @@ goStep(3);
 
 }
 
-/* Init */
+/* ===== Init ===== */
 
 document.addEventListener(
 "DOMContentLoaded",
